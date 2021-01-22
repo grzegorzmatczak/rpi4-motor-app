@@ -6,6 +6,15 @@ project(rpi-motor-app
   
 enable_testing()
 
+if (WIN32)
+	set(I2C_ARDUINO FALSE)
+endif (WIN32)
+
+if (UNIX)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -std=c++17 -pthread -lwiringPi -fPIC")
+	set(I2C_ARDUINO TRUE)
+endif (UNIX)
+
 set(DEFAULT_BUILD_TYPE "Debug")
 set(CMAKE_BUILD_TYPE "Debug")
 set(TARGET_NAME "rpi-motor-app")
@@ -50,10 +59,18 @@ add_subdirectory(spdlog)
 
 set(SRC
 	ConfigReader/src/configreader.cc
+	Broadcaster/src/broadcaster.cc
+	QtCommunicatorPlugin/src/message.cc
+	QtCommunicatorPlugin/src/mqt.cc
+	QtCommunicatorPlugin/src/sockio.cc
 )
 
 set(HEADERS
 	ConfigReader/include/configreader.h
+	Broadcaster/include/broadcaster.h
+	QtCommunicatorPlugin/include/message.h
+	QtCommunicatorPlugin/include/mqt.h
+	QtCommunicatorPlugin/include/sockio.h
 )
 
 file(GLOB_RECURSE SRC_GLOB src/*.cc src/*.c src/*.cpp)
