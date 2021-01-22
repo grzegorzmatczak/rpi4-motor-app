@@ -2,6 +2,7 @@
 
 constexpr auto GENERAL{"General"};
 constexpr auto THREADSMAX{"ThreadsMax"};
+constexpr auto ARDUINO{ "Arduino" };
 
 
 MainLoop::MainLoop(QJsonObject a_config)
@@ -26,16 +27,16 @@ void MainLoop::configure(QJsonObject const& a_config)
 
 void MainLoop::createStartupThreads()
 {
-	m_dataMemoryThread = new QThread();
-	//m_dataMemory = new DataMemory();
-	//connect(m_dataMemory, &DataMemory::memoryLoaded, this, &MainLoop::onMemoryLoaded);
-	//m_dataMemory->moveToThread(m_dataMemoryThread);
-	//connect(m_dataMemoryThread, &QThread::finished, m_dataMemory, &QObject::deleteLater);
-	//m_dataMemoryThread->start();
+	m_arduinoControlThread = new QThread();
+	m_arduinoControl = new ArduinoControl(m_config[ARDUINO].toObject());
+	
+	m_arduinoControl->moveToThread(m_arduinoControlThread);
+	connect(m_arduinoControlThread, &QThread::finished, m_arduinoControl, &QObject::deleteLater);
+	m_arduinoControlThread->start();
 
 
 	m_timer = new QTimer(this);
 	m_timer->start(1000);
-	//connect(m_timer, SIGNAL(timeout()), this, SLOT(onUpdate()));
-	
+	connect(m_timer, SIGNAL(timeout()), m_arduinoControl, SLOT(onUpdate()));
+	//connect(m_timer, QTimer::timeout(QTimer::QPrivateSignal) , m_arduinoControl, ArduinoControl::onUpdate);
 }

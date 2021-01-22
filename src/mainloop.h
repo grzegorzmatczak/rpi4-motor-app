@@ -13,6 +13,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "structures.h"
+#include "i2c_arduino_control.h"
 
 
 class MainLoop : public QObject {
@@ -33,8 +34,8 @@ private:
 	// Threads:
 	const qint32 m_threadsMax{};
 
-	QThread* m_dataMemoryThread;
-	//DataMemory* m_dataMemory;
+	QThread* m_arduinoControlThread;
+	ArduinoControl* m_arduinoControl;
 
 private:
 	// Configs:
