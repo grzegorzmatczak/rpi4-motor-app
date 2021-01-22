@@ -1,22 +1,11 @@
 {
   "General": {
-    "LogLevel": 2,
+    "LogLevel": 0,
     "ThreadsMax": 12,
     "Standalone": false,
-	"PopulationSize" : 30
+    "PopulationSize": 30
   },
-  "ConfigWin": {
-    "Dataset": "E:\\repo\\GeneticOptimization\\dataset.json",
-    "Graph": "E:\\repo\\GeneticOptimization\\graph.json",
-    "Bounds": "E:\\repo\\GeneticOptimization\\bounds.json",
-    "Preprocess": "E:\\repo\\GeneticOptimization\\preprocess.json",
-    "Postprocess": "E:\\repo\\GeneticOptimization\\postprocess.json"
-  },
-  "ConfigUnix": {
-    "Dataset": "/home/gm/repo/GeneticOptimization/dataset.json",
-    "Graph": "/home/gm/repo/GeneticOptimization/graph.json",
-    "Bounds": "/home/gm/repo/GeneticOptimization/bounds.json",
-    "Preprocess": "/home/gm/repo/GeneticOptimization/preprocess.json",
-    "Postprocess": "/home/gm/repo/GeneticOptimization/postprocess.json"
+  "Arduino": {
+    "DeviceId" : 8
   }
 }
