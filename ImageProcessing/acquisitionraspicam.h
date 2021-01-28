@@ -1,0 +1,53 @@
+#ifndef IMAGEACQUISITION_H
+#define IMAGEACQUISITION_H
+
+#include <QJsonObject>
+#include <QObject>
+#include <QTime>
+
+#include "../../src/structures.h"
+
+#include <opencv2/opencv.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
+#include "RaspiCamCV.h"
+
+class ImageAcquisition : public QObject
+{
+  Q_OBJECT
+ public:
+  ImageAcquisition(QJsonObject const &a_config);
+  void configure(QJsonObject const &a_config);
+  void loadCapture();
+
+
+ signals:
+  void sendImage(const qint32 topic, QByteArray image);
+
+ public slots:
+  void onUpdate();
+
+ private:
+  cv::Mat m_image;
+  cv::Mat m_imageGray;
+  cv::Mat m_imageGrayResized;
+  //cv::VideoCapture m_capture;
+
+ private:
+  qint32 m_width;
+  qint32 m_height;
+
+ private:
+  qint32 m_colorCode;
+  QTime m_lastFrameReciveTime{};
+  int m_framerate{};
+  qint32 m_framerateAdd{};
+  quint32 m_counter{};
+  quint32 m_addingCounter{};
+  bool m_showDebugView;
+
+  RaspiCamCvCapture* m_capture;
+};
+
+#endif // IMAGEACQUISITION_H
