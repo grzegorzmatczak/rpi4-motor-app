@@ -7,11 +7,12 @@ project(rpi-motor-app
 enable_testing()
 
 if (WIN32)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -std=c++17 -pthread ")
 	set(I2C_ARDUINO FALSE)
 endif (WIN32)
 
 if (UNIX)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -std=c++17 -pthread -lwiringPi -fPIC")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -std=c++17 -pthread -lwiringPi ")
 	set(I2C_ARDUINO TRUE)
 endif (UNIX)
 
@@ -21,7 +22,20 @@ set(TARGET_NAME "rpi-motor-app")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -O1 " )
+
+
+IF(NOT TARGET_PROCESSOR )
+    SET(TARGET_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
+ENDIF()
+
+
+if(${TARGET_PROCESSOR} MATCHES armv7l) # In ARM_COrtex8 with neon, enalble vectorized operations
+    set(GENERAL_FLAGS "${GENERAL_FLAGS} -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard ")
+endif()
+if(${TARGET_PROCESSOR} MATCHES armv6l) # In PiZero with neon, enalble vectorized operations
+    set(GENERAL_FLAGS "${GENERAL_FLAGS}  -mabi=aapcs-linux -marm  -march=armv6 -mfloat-abi=hard  -mfp16-format=none -mfpu=vfp -mlittle-endian -mpic-data-is-text-relative -mrestrict-it -msched-prolog -mstructure-size-boundary=0x20 -mtp=auto -mtls-dialect=gnu -munaligned-access -mvectorize-with-neon-quad")
+endif()
+
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -52,12 +66,18 @@ find_package(Qt5Core REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
 #include fix for OpenCV
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_subdirectory(spdlog)
 
+if (UNIX)
+	add_subdirectory(raspicam-0.1.8)
+endif (UNIX)
+
 set(SRC
+	src/main.cc
 	ConfigReader/src/configreader.cc
 	Broadcaster/src/broadcaster.cc
 	QtCommunicatorPlugin/src/message.cc
@@ -76,38 +96,75 @@ set(HEADERS
 file(GLOB_RECURSE SRC_GLOB src/*.cc src/*.c src/*.cpp)
 file(GLOB_RECURSE HEADERS_GLOB src/*.h src/*.hpp)
 
+if (WIN32)
+	set(SRC_IMAGE_PROCESSING
+		ImageProcessing/acquisition.cc
+	)
+
+	set(HEADERS_IMAGE_PROCESSING
+		ImageProcessing/acquisition.h
+	)
+endif (WIN32)
+
+
+if (UNIX)
+
+INCLUDE_DIRECTORIES(raspicam-0.1.8/src)
+LINK_LIBRARIES(raspicam_cv )
+
+
+	set(SRC_IMAGE_PROCESSING
+		ImageProcessing/acquisitionraspi.cc
+		#ImageProcessing/acquisitionraspicam.cc
+		#ImageProcessing/RaspiCamCV.c
+	)
+
+	set(HEADERS_IMAGE_PROCESSING
+		ImageProcessing/acquisitionraspi.h
+		#ImageProcessing/acquisitionraspicam.h
+		#ImageProcessing/RaspiCamCV.h
+	)
+endif (UNIX)
+
 add_executable(${TARGET_NAME}
     ${SRC} ${HEADERS}
 	${SRC_GLOB} ${HEADERS_GLOB}
+	${SRC_IMAGE_PROCESSING} ${HEADERS_IMAGE_PROCESSING}
 )
 
 add_executable(testModules 
 	#ProcessingModules/src/Test/test.cc
 	${SRC} ${HEADERS}
 	${SRC_GLOB} ${HEADERS_GLOB}
+	${SRC_IMAGE_PROCESSING} ${HEADERS_IMAGE_PROCESSING}
 )
 	
 add_test(testModules testModules)
 
+qt5_use_modules(${PROJECT_NAME} Network Widgets Test)
 
 target_link_libraries(testModules spdlog::spdlog)
 target_link_libraries(testModules ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads)
-target_link_libraries(testModules Qt5::Test)
+target_link_libraries(testModules Qt5::Test Qt5::Network)
 
-qt5_use_modules(${PROJECT_NAME} Widgets Test)
+
 
 
 if (UNIX)
 	target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
-	target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads Qt5::Test)
+	target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads Qt5::Test Qt5::Network)
 endif (UNIX)
 
 if (WIN32)
 	target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
-	target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads Qt5::Test)
+	target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads Qt5::Test Qt5::Network)
 endif (WIN32)
 
-
+if (UNIX)
+	target_link_libraries(${PROJECT_NAME} raspicam_cv ${raspicam_CV_LIBS})
+	include_directories("raspicam-0.1.8/dependencies/interface/vcos" "raspicam-0.1.8/../dependencies/interface" "raspicam-0.1.8/../dependencies")
+	
+endif (UNIX)
 
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE} ")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND WIN32)
