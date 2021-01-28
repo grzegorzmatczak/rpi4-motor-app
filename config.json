@@ -5,7 +5,25 @@
     "Standalone": false,
     "PopulationSize": 30
   },
+  "Server": {
+    "Port": 12345,
+    "Ip": "192.168.8.150",
+    "InfoTopic": 1,
+    "CommandTopic": 2,
+    "ImageTopic": 2
+  },
+  "ImageAcquisition": {
+    "Width": 32,
+    "Height": 24,
+    "Cap": 1
+  },
+  "ImageWidget": {
+    "Width": 32,
+    "Height": 24,
+    "WidthResize": 320,
+    "HeightResize": 240
+  },
   "Arduino": {
-    "DeviceId" : 8
+    "DeviceId": 8
   }
 }
