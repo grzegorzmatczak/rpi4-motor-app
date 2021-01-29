@@ -28,14 +28,12 @@ IF(NOT TARGET_PROCESSOR )
     SET(TARGET_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
 ENDIF()
 
-
 if(${TARGET_PROCESSOR} MATCHES armv7l) # In ARM_COrtex8 with neon, enalble vectorized operations
     set(GENERAL_FLAGS "${GENERAL_FLAGS} -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard ")
 endif()
 if(${TARGET_PROCESSOR} MATCHES armv6l) # In PiZero with neon, enalble vectorized operations
     set(GENERAL_FLAGS "${GENERAL_FLAGS}  -mabi=aapcs-linux -marm  -march=armv6 -mfloat-abi=hard  -mfp16-format=none -mfpu=vfp -mlittle-endian -mpic-data-is-text-relative -mrestrict-it -msched-prolog -mstructure-size-boundary=0x20 -mtp=auto -mtls-dialect=gnu -munaligned-access -mvectorize-with-neon-quad")
 endif()
-
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -54,11 +52,8 @@ if (WIN32)
 	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\Broadcaster\\build")	
 endif (WIN32)
 
-
 configure_file(config.json ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.json)
-
 configure_file(config.json ${CMAKE_BINARY_DIR}/config.json)
-
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -67,10 +62,9 @@ find_package(OpenCV REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
-#include fix for OpenCV
 include_directories(${OpenCV_INCLUDE_DIRS})
-
 add_subdirectory(spdlog)
+
 
 if (UNIX)
 	add_subdirectory(raspicam-0.1.8)
@@ -108,21 +102,18 @@ endif (WIN32)
 
 
 if (UNIX)
-
-INCLUDE_DIRECTORIES(raspicam-0.1.8/src)
-LINK_LIBRARIES(raspicam_cv )
+	INCLUDE_DIRECTORIES(raspicam-0.1.8/src)
+	LINK_LIBRARIES(raspicam_cv )
 
 
 	set(SRC_IMAGE_PROCESSING
 		ImageProcessing/acquisitionraspi.cc
-		#ImageProcessing/acquisitionraspicam.cc
-		#ImageProcessing/RaspiCamCV.c
+		ImageProcessing/capture.cc
 	)
 
 	set(HEADERS_IMAGE_PROCESSING
 		ImageProcessing/acquisitionraspi.h
-		#ImageProcessing/acquisitionraspicam.h
-		#ImageProcessing/RaspiCamCV.h
+		ImageProcessing/capture.h
 	)
 endif (UNIX)
 
@@ -133,7 +124,6 @@ add_executable(${TARGET_NAME}
 )
 
 add_executable(testModules 
-	#ProcessingModules/src/Test/test.cc
 	${SRC} ${HEADERS}
 	${SRC_GLOB} ${HEADERS_GLOB}
 	${SRC_IMAGE_PROCESSING} ${HEADERS_IMAGE_PROCESSING}
@@ -146,8 +136,6 @@ qt5_use_modules(${PROJECT_NAME} Network Widgets Test)
 target_link_libraries(testModules spdlog::spdlog)
 target_link_libraries(testModules ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads)
 target_link_libraries(testModules Qt5::Test Qt5::Network)
-
-
 
 
 if (UNIX)
@@ -167,17 +155,14 @@ if (UNIX)
 endif (UNIX)
 
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE} ")
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND WIN32)
-
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
+	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 if (CMAKE_BUILD_TYPE STREQUAL "Release" AND WIN32)
-
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
+	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
 if (WIN32)
@@ -228,8 +213,5 @@ if (WIN32)
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_dnn450${OPENCV_PREFIX_BUILD_TYPE}.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_highgui450${OPENCV_PREFIX_BUILD_TYPE}.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_videoio_ffmpeg450_64.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
-
-		)
-
-
+	)
 endif(WIN32)
