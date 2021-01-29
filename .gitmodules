@@ -7,3 +7,6 @@
 [submodule "QtCommunicatorPlugin"]
 	path = QtCommunicatorPlugin
 	url = https://github.com/SanczoPL/QtCommunicatorPlugin.git
+[submodule "ConfigReader"]
+	path = ConfigReader
+	url = https://github.com/SanczoPL/ConfigReader.git
