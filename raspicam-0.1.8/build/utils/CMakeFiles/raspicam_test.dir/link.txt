@@ -1,0 +1,1 @@
+/usr/bin/c++    -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard   -O3 -g0  -DNDEBUG      -rdynamic CMakeFiles/raspicam_test.dir/raspicam_test.cpp.o  -o raspicam_test -Wl,-rpath,/home/gmatczak/raspicam-0.1.8/build/src:/opt/vc/lib: ../src/libraspicam.so.0.1.8 -lpthread /opt/vc/lib/libmmal_core.so /opt/vc/lib/libmmal_util.so /opt/vc/lib/libmmal.so 
