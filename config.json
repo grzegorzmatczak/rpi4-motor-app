@@ -1,27 +1,30 @@
 {
   "General": {
-    "LogLevel": 0,
-    "ThreadsMax": 12,
-    "Standalone": false,
-    "PopulationSize": 30
+    "LogLevel": 0
   },
   "Server": {
     "Port": 12345,
     "Ip": "192.168.8.150",
     "InfoTopic": 1,
     "CommandTopic": 2,
-    "ImageTopic": 2
+    "ImageTopic": 3
   },
   "ImageAcquisition": {
     "Width": 32,
     "Height": 24,
-    "Cap": 1
-  },
-  "ImageWidget": {
-    "Width": 32,
-    "Height": 24,
-    "WidthResize": 320,
-    "HeightResize": 240
+    "Cap": 1,
+    "OpenCV_Preview": true,
+    "WidthAcquisition": 320,
+    "HeightAcquisition": 240,
+    "ColorCode": 6,
+    "RpiCamera": true,
+    "RpiCameraStill": false,
+    "WidthCamera": 320,
+    "HeightCamera": 240,
+    "Brightness": 50,
+    "Contrast": 50,
+    "Saturation": 50,
+    "Gain": 50
   },
   "Arduino": {
     "DeviceId": 8
