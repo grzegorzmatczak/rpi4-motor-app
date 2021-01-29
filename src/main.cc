@@ -23,8 +23,6 @@ void intro();
 
 int main(int argc, char* argv[]) {
 	QCoreApplication application(argc, argv);
-	qint64 pid = application.applicationPid();
-	//qRegisterMetaType<struct fitness>("struct fitness");
 
 	Logger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%t] [%^%l%$] %v");
 	Logger->debug("Start main logger with LogLevel:{}", 0);
@@ -38,6 +36,7 @@ int main(int argc, char* argv[]) {
 		configPathWithName = QString::fromStdString(argv[1]);
 	}
 	Logger->trace("MainLoop::MainLoop() open config file:{}", configPathWithName.toStdString());
+
 	ConfigReader* configReader = new ConfigReader();
 	if (!configReader->readConfig(configPathWithName, m_config)) {
 		Logger->error("File {} not readed", configPathWithName.toStdString());
@@ -46,8 +45,8 @@ int main(int argc, char* argv[]) {
 	delete configReader;
 
 	Logger->set_level(static_cast<spdlog::level::level_enum>(m_config[GENERAL].toObject()[LOG_LEVEL].toInt()));
-	m_config[PID] = pid;
-	qDebug() << "m_config" << m_config;
+	intro();
+
 	MainLoop mainLoop{ m_config};
 	return application.exec();
 }
@@ -57,5 +56,5 @@ void intro()
 	Logger->info(
 		"\n\n\t\033[1;31mrpi4-motor-app \033[0m\n"
 		"\tAuthor: Grzegorz Matczak\n"
-		"\t17.01.2021\n");
+		"\t29.01.2021\n");
 }
