@@ -14,7 +14,8 @@
 
 #include "structures.h"
 #include "i2c_arduino_control.h"
-
+#include "../Broadcaster/include/broadcaster.h"
+#include "../ImageProcessing/acquisition.h"
 
 class MainLoop : public QObject {
 	Q_OBJECT
@@ -37,21 +38,25 @@ private:
 	QThread* m_arduinoControlThread;
 	ArduinoControl* m_arduinoControl;
 
+	QThread* m_serverThread;
+	Broadcaster* m_server;
+
+	QThread* m_ImageAcquisitionThread;
+	ImageAcquisition* m_imageAcquisition;
+
 private:
 	// Configs:
 	QJsonObject m_config;
-	
 
 private:
 	// Timers:
 	QTimer* m_timer;
-	
+	QTimer* m_timerAcquisition;
+
 private:
 	// Bools:
 	bool m_register{};
 	bool m_recvTask{};
 	bool m_validTask{};
-
 };
-
 #endif // MAINLOOP_H
