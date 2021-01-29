@@ -5,11 +5,11 @@
 #include <QObject>
 #include <QTime>
 
-#include "../../src/structures.h"
-
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+
+#include "../../src/structures.h"
 
 class ImageAcquisition : public QObject
 {

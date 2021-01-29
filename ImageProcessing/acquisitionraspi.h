@@ -5,53 +5,43 @@
 #include <QObject>
 #include <QTime>
 
-#include "../../src/structures.h"
-
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include "raspicam_cv.h"
+#include "../../src/structures.h"
+#include <raspicam_cv.h>
+#include "capture.h"
 
 class ImageAcquisition : public QObject
 {
-  Q_OBJECT
- public:
-  ImageAcquisition(QJsonObject const &a_config);
-  void configure(QJsonObject const &a_config);
-  void loadCapture();
-  
-  //raspicam::RaspiCam_Cv* m_camera;
+	Q_OBJECT
+public:
+	ImageAcquisition(QJsonObject const& a_config);
+	~ImageAcquisition();
+	void configure(QJsonObject const& a_config);
 
- signals:
-  void update(cv::Mat image);
-  void showImagesOpenCV3(cv::Mat frame, std::string name);
-  void sendImage(const qint32 topic, QByteArray image);
+signals:
+	void update(cv::Mat image);
+	void showImagesOpenCV3(cv::Mat frame, std::string name);
+	void sendImage(const qint32 topic, QByteArray image);
+	void refreshAcc(qint32 imageAcc);
 
- public slots:
-  void onUpdate();
+public slots:
+	void onUpdate();
 
- private:
-  cv::Mat m_image;
-  cv::Mat m_imageGray;
-  cv::Mat m_imageGrayResized;
-  cv::VideoCapture m_capture;
-  int m_cap;
+private:
+	cv::Mat m_image;
+	cv::Mat m_imageGray;
+	cv::Mat m_imageGrayResized;
 
- private:
-  qint32 m_width;
-  qint32 m_height;
+private:
+	qint32 m_width{};
+	qint32 m_height{};
+	qint32 m_dataSize{};
 
- private:
-  qint32 m_colorCode;
-  QTime m_lastFrameReciveTime{};
-  int m_framerate{};
-  qint32 m_framerateAdd{};
-  quint32 m_counter{};
-  quint32 m_addingCounter{};
-  bool m_showDebugView;
-
-  
+private:
+	Capture* m_capture;
 };
 
 #endif // IMAGEACQUISITION_H
