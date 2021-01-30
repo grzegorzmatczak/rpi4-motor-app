@@ -5,10 +5,14 @@ constexpr auto THREADSMAX{ "ThreadsMax" };
 constexpr auto ARDUINO{ "Arduino" };
 constexpr auto IMAGE_ACQUISITION{ "ImageAcquisition" };
 constexpr auto SERVER{ "Server" };
+constexpr auto INFO_TOPIC{ "InfoTopic" };
+constexpr auto COMMAND_TOPIC{ "CommandTopic" };
+constexpr auto IMAGE_TOPIC{ "ImageTopic" };
 
 MainLoop::MainLoop(QJsonObject a_config)
 	:m_config{ a_config },
-	m_threadsMax{ a_config[GENERAL].toObject()[THREADSMAX].toInt() }
+	m_threadsMax{ a_config[GENERAL].toObject()[THREADSMAX].toInt() },
+	m_firstTime(true)
 {
 	Logger->trace("ConfigManager:: m_threadsMax:{}", m_threadsMax);
 	MainLoop::createStartupThreads();
@@ -16,7 +20,13 @@ MainLoop::MainLoop(QJsonObject a_config)
 
 void MainLoop::onUpdate()
 {
-
+	if (m_firstTime)
+	{
+		QVector<int> topics{ m_config[SERVER].toObject()[IMAGE_TOPIC].toInt(), m_config[SERVER].toObject()[COMMAND_TOPIC].toInt() };
+		Logger->info("Sub on topics:{} and {}", m_config[SERVER].toObject()[IMAGE_TOPIC].toInt(), m_config[SERVER].toObject()[COMMAND_TOPIC].toInt());
+		m_server->onSubscribe(topics);
+		m_firstTime = false;
+	}
 }
 
 void MainLoop::configure(QJsonObject const& a_config)

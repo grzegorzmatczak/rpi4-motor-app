@@ -55,8 +55,7 @@ private:
 
 private:
 	// Bools:
-	bool m_register{};
-	bool m_recvTask{};
-	bool m_validTask{};
+	bool m_firstTime{};
+
 };
 #endif // MAINLOOP_H
