@@ -46,6 +46,7 @@ void MainLoop::createStartupThreads()
 	m_timer = new QTimer(this);
 	m_timer->start(1000);
 	connect(m_timer, SIGNAL(timeout()), m_arduinoControl, SLOT(onUpdate()));
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(onUpdate()));
 
 	// Broadcaster:
 	m_serverThread = new QThread();
