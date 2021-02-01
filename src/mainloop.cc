@@ -22,8 +22,8 @@ void MainLoop::onUpdate()
 {
 	if (m_firstTime)
 	{
-		QVector<int> topics{ m_config[SERVER].toObject()[INFO_TOPIC].toInt(), m_config[SERVER].toObject()[COMMAND_TOPIC].toInt() };
-		Logger->info("Sub on topics:{} and {}", m_config[INFO_TOPIC].toObject()[IMAGE_TOPIC].toInt(), m_config[SERVER].toObject()[COMMAND_TOPIC].toInt());
+		QVector<int> topics{ m_config[SERVER].toObject()[INFO_TOPIC].toInt() };
+		Logger->info("Sub on topics:{}", m_config[SERVER].toObject()[INFO_TOPIC].toInt());
 		m_server->onSubscribe(topics);
 		m_firstTime = false;
 	}
