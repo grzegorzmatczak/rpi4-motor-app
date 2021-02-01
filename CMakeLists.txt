@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-IF(NOT TARGET_PROCESSOR )
+IF(NOT TARGET_PROCESSOR)
     SET(TARGET_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
 ENDIF()
 
@@ -45,11 +45,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 if (WIN32)
 	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\opencvBuild")
 	list(APPEND CMAKE_PREFIX_PATH "E:\\Qt\\5.12.8\\msvc2017_64")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\ConfigReader\\build")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\ProcessingModules\\build")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\PostProcessingModules\\build")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\QtCommunicatorPlugin\\build")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\Broadcaster\\build")	
 endif (WIN32)
 
 configure_file(config.json ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.json)
@@ -63,58 +58,38 @@ find_package(Qt5Test REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
-add_subdirectory(spdlog)
-
+add_subdirectory(IncludeSpdlog)
+add_subdirectory(ConfigReader)
+add_subdirectory(Broadcaster)
 
 if (UNIX)
 	add_subdirectory(raspicam-0.1.8)
 endif (UNIX)
 
-set(SRC
-	src/main.cc
-	ConfigReader/src/configreader.cc
-	Broadcaster/src/broadcaster.cc
-	QtCommunicatorPlugin/src/message.cc
-	QtCommunicatorPlugin/src/mqt.cc
-	QtCommunicatorPlugin/src/sockio.cc
-)
+set(SRC	src/main.cc)
 
-set(HEADERS
-	ConfigReader/include/configreader.h
-	Broadcaster/include/broadcaster.h
-	QtCommunicatorPlugin/include/message.h
-	QtCommunicatorPlugin/include/mqt.h
-	QtCommunicatorPlugin/include/sockio.h
-)
+set(HEADERS	ConfigReader/include/configreader.h)
 
 file(GLOB_RECURSE SRC_GLOB src/*.cc src/*.c src/*.cpp)
 file(GLOB_RECURSE HEADERS_GLOB src/*.h src/*.hpp)
 
 if (WIN32)
-	set(SRC_IMAGE_PROCESSING
-		ImageProcessing/acquisition.cc
-	)
-
-	set(HEADERS_IMAGE_PROCESSING
-		ImageProcessing/acquisition.h
-	)
+	set(SRC_IMAGE_PROCESSING ImageProcessing/acquisition.cc)
+	set(HEADERS_IMAGE_PROCESSING ImageProcessing/acquisition.h)
 endif (WIN32)
 
 
 if (UNIX)
 	INCLUDE_DIRECTORIES(raspicam-0.1.8/src)
-	LINK_LIBRARIES(raspicam_cv )
-
+	LINK_LIBRARIES(raspicam_cv)
 
 	set(SRC_IMAGE_PROCESSING
 		ImageProcessing/acquisitionraspi.cc
-		ImageProcessing/capture.cc
-	)
+		ImageProcessing/capture.cc)
 
 	set(HEADERS_IMAGE_PROCESSING
 		ImageProcessing/acquisitionraspi.h
-		ImageProcessing/capture.h
-	)
+		ImageProcessing/capture.h)
 endif (UNIX)
 
 add_executable(${TARGET_NAME}
@@ -131,21 +106,21 @@ add_executable(testModules
 	
 add_test(testModules testModules)
 
-qt5_use_modules(${PROJECT_NAME} Network Widgets Test)
-
-target_link_libraries(testModules spdlog::spdlog)
-target_link_libraries(testModules ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads)
-target_link_libraries(testModules Qt5::Test Qt5::Network)
+target_link_libraries(testModules IncludeSpdlog ConfigReader Broadcaster)
+target_link_libraries(testModules ${OpenCV_LIBS} Threads::Threads)
+target_link_libraries(testModules Qt5::Test Qt5::Network Qt5::Widgets)
 
 
 if (UNIX)
-	target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
-	target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads Qt5::Test Qt5::Network)
+	target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader Broadcaster)
+	target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads)
+	target_link_libraries(${PROJECT_NAME} Qt5::Test Qt5::Network Qt5::Widgets)
 endif (UNIX)
 
 if (WIN32)
-	target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
-	target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${OpenCV_LIBS} Threads::Threads Qt5::Test Qt5::Network)
+	target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader Broadcaster)
+	target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads)
+	target_link_libraries(${PROJECT_NAME} Qt5::Test Qt5::Network Qt5::Widgets)
 endif (WIN32)
 
 if (UNIX)
@@ -212,6 +187,7 @@ if (WIN32)
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_flann450${OPENCV_PREFIX_BUILD_TYPE}.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_dnn450${OPENCV_PREFIX_BUILD_TYPE}.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_highgui450${OPENCV_PREFIX_BUILD_TYPE}.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_gapi450${OPENCV_PREFIX_BUILD_TYPE}.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  ${OpenCV_DIR}/bin/${CMAKE_BUILD_TYPE}/opencv_videoio_ffmpeg450_64.dll   ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/
 	)
 endif(WIN32)
