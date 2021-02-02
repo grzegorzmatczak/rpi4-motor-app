@@ -1,6 +1,6 @@
 {
   "General": {
-    "LogLevel": 0
+    "LogLevel": 1
   },
   "Server": {
     "Port": 12345,
@@ -13,6 +13,7 @@
   "ImageAcquisition": {
     "Width": 32,
     "Height": 24,
+    "Tick": 10,
     "Cap": 1,
     "OpenCV_Preview": true,
     "WidthAcquisition": 320,
@@ -27,7 +28,14 @@
     "Saturation": 50,
     "Gain": 50
   },
+  "ImageBounds": {
+    "Width": 32,
+    "Height": 24,
+    "DecisionThreshold": 120,
+    "Vote": 10,
+    "OpenCV_Preview" :  false
+  },
   "Arduino": {
-    "DeviceId": 8
+     "DeviceId": 8
   }
 }
