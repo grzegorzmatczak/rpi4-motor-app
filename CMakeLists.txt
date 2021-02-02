@@ -68,8 +68,6 @@ endif (UNIX)
 
 set(SRC	src/main.cc)
 
-set(HEADERS	ConfigReader/include/configreader.h)
-
 file(GLOB_RECURSE SRC_GLOB src/*.cc src/*.c src/*.cpp)
 file(GLOB_RECURSE HEADERS_GLOB src/*.h src/*.hpp)
 
@@ -85,10 +83,12 @@ if (UNIX)
 
 	set(SRC_IMAGE_PROCESSING
 		ImageProcessing/acquisitionraspi.cc
+		ImageProcessing/bounds.cc
 		ImageProcessing/capture.cc)
 
 	set(HEADERS_IMAGE_PROCESSING
 		ImageProcessing/acquisitionraspi.h
+		ImageProcessing/bounds.h
 		ImageProcessing/capture.h)
 endif (UNIX)
 
