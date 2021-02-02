@@ -4,15 +4,18 @@ constexpr auto GENERAL{ "General" };
 constexpr auto THREADSMAX{ "ThreadsMax" };
 constexpr auto ARDUINO{ "Arduino" };
 constexpr auto IMAGE_ACQUISITION{ "ImageAcquisition" };
+constexpr auto IMAGE_BOUNDS{ "ImageBounds" };
 constexpr auto SERVER{ "Server" };
 constexpr auto INFO_TOPIC{ "InfoTopic" };
 constexpr auto COMMAND_TOPIC{ "CommandTopic" };
 constexpr auto IMAGE_TOPIC{ "ImageTopic" };
+constexpr auto TICK{ "Tick" };
 
 MainLoop::MainLoop(QJsonObject a_config)
-	:m_config{ a_config },
-	m_threadsMax{ a_config[GENERAL].toObject()[THREADSMAX].toInt() },
-	m_firstTime(true)
+	:m_config{ a_config }
+	, m_threadsMax{ a_config[GENERAL].toObject()[THREADSMAX].toInt() }
+	, m_firstTime(true)
+	, m_tickAcquisition(a_config[GENERAL].toObject()[TICK].toInt())
 {
 	Logger->trace("ConfigManager:: m_threadsMax:{}", m_threadsMax);
 	MainLoop::createStartupThreads();
@@ -63,7 +66,16 @@ void MainLoop::createStartupThreads()
 	m_ImageAcquisitionThread->start();
 	connect(m_imageAcquisition, &ImageAcquisition::sendImage, m_server, &Broadcaster::onSendImage);
 	m_timerAcquisition = new QTimer(this);
-	m_timerAcquisition->start(100);
+	m_timerAcquisition->start(m_tickAcquisition);
 	connect(m_timerAcquisition, SIGNAL(timeout()), m_imageAcquisition, SLOT(onUpdate()));
 
+
+	// Bounds:
+	m_imageBounds = new Bounds(m_config[IMAGE_BOUNDS].toObject());
+	m_imageBoundsThread = new QThread();
+	m_imageBounds->moveToThread(m_imageBoundsThread);
+	connect(m_imageBoundsThread, &QThread::finished, m_imageBounds, &QObject::deleteLater);
+	m_imageBoundsThread->start();
+	connect(m_imageAcquisition, &ImageAcquisition::update, m_imageBounds, &Bounds::onUpdate);
+	connect(m_imageBounds, &Bounds::sendImage, m_server, &Broadcaster::onSendImage);
 }

@@ -24,6 +24,8 @@ void intro();
 int main(int argc, char* argv[]) {
 	QCoreApplication application(argc, argv);
 
+	qRegisterMetaType<cv::Mat>("cv::Mat");
+
 	Logger->set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%t] [%^%l%$] %v");
 	Logger->debug("Start main logger with LogLevel:{}", 0);
 	intro();

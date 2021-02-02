@@ -16,6 +16,7 @@
 #include "i2c_arduino_control.h"
 #include "../Broadcaster/include/broadcaster.h"
 #include "../ImageProcessing/acquisition.h"
+#include "../ImageProcessing/bounds.h"
 
 class MainLoop : public QObject {
 	Q_OBJECT
@@ -44,6 +45,9 @@ private:
 	QThread* m_ImageAcquisitionThread;
 	ImageAcquisition* m_imageAcquisition;
 
+	QThread* m_imageBoundsThread;
+	Bounds* m_imageBounds;
+
 private:
 	// Configs:
 	QJsonObject m_config;
@@ -56,6 +60,6 @@ private:
 private:
 	// Bools:
 	bool m_firstTime{};
-
+	qint32 m_tickAcquisition{};
 };
 #endif // MAINLOOP_H

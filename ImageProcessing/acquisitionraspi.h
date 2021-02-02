@@ -21,24 +21,28 @@ public:
 	~ImageAcquisition();
 	void configure(QJsonObject const& a_config);
 
+private:
+	void ChangeSizeAndColor(cv::Mat const& image, cv::Mat& out);
+	void ShowFramerate(cv::Mat const& image);
+
 signals:
 	void update(cv::Mat image);
-	void showImagesOpenCV3(cv::Mat frame, std::string name);
 	void sendImage(const qint32 topic, QByteArray image);
-	void refreshAcc(qint32 imageAcc);
 
 public slots:
 	void onUpdate();
 
 private:
-	cv::Mat m_image;
-	cv::Mat m_imageGray;
-	cv::Mat m_imageGrayResized;
+	QTime m_lastFrameReciveTime{};
+	qint32 m_framerate{};
 
 private:
 	qint32 m_width{};
 	qint32 m_height{};
-	qint32 m_dataSize{};
+	quint32 m_dataSize{};
+	quint32 m_counter{};
+	quint32 m_addingCounter{};
+	quint32 m_framerateAdd{};
 
 private:
 	Capture* m_capture;
