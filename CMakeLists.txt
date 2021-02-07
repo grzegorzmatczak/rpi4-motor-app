@@ -58,8 +58,10 @@ find_package(Qt5Test REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
+
 add_subdirectory(IncludeSpdlog)
 add_subdirectory(ConfigReader)
+add_subdirectory(QtCommunicatorPlugin)
 add_subdirectory(Broadcaster)
 
 if (UNIX)
