@@ -72,8 +72,8 @@ file(GLOB_RECURSE SRC_GLOB src/*.cc src/*.c src/*.cpp)
 file(GLOB_RECURSE HEADERS_GLOB src/*.h src/*.hpp)
 
 if (WIN32)
-	set(SRC_IMAGE_PROCESSING ImageProcessing/acquisition.cc)
-	set(HEADERS_IMAGE_PROCESSING ImageProcessing/acquisition.h)
+	set(SRC_IMAGE_PROCESSING ImageProcessing/acquisition.cc ImageProcessing/bounds.cc)
+	set(HEADERS_IMAGE_PROCESSING ImageProcessing/acquisition.h ImageProcessing/bounds.h)
 endif (WIN32)
 
 
