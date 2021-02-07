@@ -18,6 +18,7 @@
 #include "../ImageProcessing/acquisition.h"
 #include "../ImageProcessing/bounds.h"
 
+
 class MainLoop : public QObject {
 	Q_OBJECT
 public:

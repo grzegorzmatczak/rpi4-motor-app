@@ -18,7 +18,6 @@ constexpr auto PID{"Pid"};
 constexpr auto LOG_LEVEL{"LogLevel"};
 
 
-
 void intro();
 
 int main(int argc, char* argv[]) {
@@ -58,5 +57,5 @@ void intro()
 	Logger->info(
 		"\n\n\t\033[1;31mrpi4-motor-app \033[0m\n"
 		"\tAuthor: Grzegorz Matczak\n"
-		"\t29.01.2021\n");
+		"\t07.02s.2021\n");
 }

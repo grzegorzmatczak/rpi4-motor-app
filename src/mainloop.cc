@@ -11,6 +11,7 @@ constexpr auto COMMAND_TOPIC{ "CommandTopic" };
 constexpr auto IMAGE_TOPIC{ "ImageTopic" };
 constexpr auto TICK{ "Tick" };
 
+
 MainLoop::MainLoop(QJsonObject a_config)
 	:m_config{ a_config }
 	, m_threadsMax{ a_config[GENERAL].toObject()[THREADSMAX].toInt() }
