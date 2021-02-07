@@ -26,9 +26,10 @@ Bounds::Bounds(QJsonObject const& a_config)
 	, m_thresh{ a_config[DECISION_THRESHOLD].toInt() }
 	, m_width{ a_config[WIDTH].toInt() }
 	, m_height{ a_config[HEIGHT].toInt() }
+	, m_dataSize{ a_config[WIDTH].toInt() * a_config[HEIGHT].toInt() }
 	, m_vote{ a_config[VOTE].toDouble() }
 	, m_cameraCounter(0)
-	, m_debugPreview(false)
+	, m_debugPreview(true)
 	, m_debugFrames(30)
 	, m_debugFramesColor(30)
 {
@@ -103,22 +104,15 @@ void Bounds::onUpdate(cv::Mat image)
 		error = -100.0;
 	}
 
-	//Logger->trace("emit(setActual((double)error)) m_debugPreview:{},m_cameraCounter:{},m_debugFrames:{}",
-	//	m_debugPreview, m_cameraCounter, m_debugFrames);
-	//emit(setActual((double)error));
-
-	if (m_debugPreview)
-	{
-		if (m_cameraCounter > m_debugFrames)
-		{
-			//cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 2, cv::Scalar(255), -1);
-			//cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 1, cv::Scalar(0), -1);
-			QByteArray ImgByteI((char*)(image2.data), 768); // 32x24x1
-			Logger->trace("emit(sendImage(ImgByteI));");
-			emit(sendImage(4, ImgByteI));
+			cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 2, cv::Scalar(255), -1);
+			cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 1, cv::Scalar(0), -1);
 			m_cameraCounter = 0;
-		}
-	}
+
+			QByteArray ImgByteI((char*)(image2.data), m_dataSize);
+			Logger->trace("ImageAcquisition::onUpdate() emit(sendImage(ImgByteI));");
+			emit(sendImage(4, ImgByteI));
+			emit(sendError(error));
+
 
 	m_counter++;
 
@@ -128,7 +122,7 @@ void Bounds::onUpdate(cv::Mat image)
 	}
 	quint32 nMilliseconds2 = (quint32)myTimer.elapsed();
 	m_addingCounter += nMilliseconds2;
-	if (m_counter >= 100)
+	if (m_counter >= 1000)
 	{
 		Logger->info("(timer)BoundariesFinder time:{}", ((double)m_addingCounter / (double)m_counter));
 		//refreshIP(qint32(((double)m_addingCounter / (double)m_counter)));

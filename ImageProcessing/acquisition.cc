@@ -12,9 +12,11 @@ class QJsonObject;
 ImageAcquisition::ImageAcquisition(QJsonObject const& a_config)
 	: m_width{ a_config[WIDTH].toInt() }
 	, m_height{ a_config[HEIGHT].toInt() }
+	, m_dataSize{ a_config[WIDTH].toInt() * a_config[HEIGHT].toInt() }
 	, m_counter(0)
 	, m_addingCounter(0)
 	, m_framerateAdd(0)
+	, m_framerate(0)
 {
 	loadCapture();
 }
@@ -34,7 +36,6 @@ QVector<QString> static scanAllImages(QString path)
 
 	foreach(QString filename, images)
 	{
-		//QStringList sl = filename.split(".");
 		temp.push_back(filename);
 	}
 	return temp;
@@ -43,72 +44,94 @@ QVector<QString> static scanAllImages(QString path)
 void ImageAcquisition::loadCapture()
 {
 	Logger->trace("ImageAcquisition::loadCapture()");
-	//m_capture = cv::VideoCapture("E:/repo/CrossCompilerQtRpi2/image/%d.png"); 
-	//m_capture.open("E:/repo/CrossCompilerQtRpi2/image/%d.png");
-
-
 	m_imageList = scanAllImages("E:/repo/CrossCompilerQtRpi2/image/");
-	//std::sort(m_imageList.begin(), m_imageList.end());
-	if (m_imageList.size() > 0)
-	{
-
-	}
-
-
 	Logger->trace("ImageAcquisition::loadCapture() done");
 }
 
 void ImageAcquisition::onUpdate()
 {
-	Logger->trace("ImageAcquisition::onUpdate()");
 	m_counter++;
-	m_framerate = 999;
-	QTime myTimer;
+	Logger->trace("ImageAcquisition::onAddImage() grab");
+	cv::Mat m_image;
+	QTime _timer;
+	_timer.start();
 
-		Logger->trace("ImageAcquisition::onUpdate() m_capture.isOpened():{}", m_capture.isOpened());
-		m_image = cv::imread("E:/repo/CrossCompilerQtRpi2/image/"+ m_imageList[m_counter].toStdString());
-		Logger->info("open:{}","E:/repo/CrossCompilerQtRpi2/image/"+ m_imageList[m_counter].toStdString());
-		if (m_image.empty())
-		{
-			loadCapture();
-		}
-		if (m_image.channels() == 3)
-		{
-			cvtColor(m_image, m_imageGray, cv::COLOR_RGBA2GRAY);
-		}
-		else
-		{
-			m_imageGray = m_image.clone();
-		}
-		myTimer.start();
-		cv::resize(m_imageGray, m_imageGrayResized, cv::Size(m_width, m_height));
-		if (!m_imageGrayResized.empty())
-		{
-			m_framerate = static_cast<int>(1000.0 / m_lastFrameReciveTime.restart());
-			emit(update(m_imageGrayResized));
-		}
-	
+	if (m_counter >= m_imageList.size())
+	{
+		ImageAcquisition::ShowFramerate(m_imageGrayResized);
+		m_counter = 1;
+	}
+
+	Logger->trace("ImageAcquisition::onUpdate() m_capture.isOpened():{}", m_capture.isOpened());
+	m_image = cv::imread("E:/repo/CrossCompilerQtRpi2/image/" + m_imageList[m_counter].toStdString());
+	Logger->trace("open:{}", "E:/repo/CrossCompilerQtRpi2/image/" + m_imageList[m_counter].toStdString());
+
+	if (m_image.empty() || m_image.cols == 0 || m_image.rows == 0)
+	{
+		Logger->error("ImageAcquisition::onAddImage() m_capture failed capture a frame");
+		return;
+	}
+
+	cv::Mat m_imageGrayResized;
+	ChangeSizeAndColor(m_image, m_imageGrayResized);
+
+	if (!m_imageGrayResized.empty())
+	{
+		emit(update(m_imageGrayResized));
+		m_framerate = static_cast<int>(1000.0 / m_lastFrameReciveTime.restart());
+		Logger->trace("Recived new frame.framerate {}", m_framerate);
 
 #if(DEBUG)
-	cv::imshow("m_imageGrayResized", m_imageGrayResized);
-	cv::waitKey(1);
-
-	
+		QString test(ImgByteI.toHex());
+		Logger->trace("ImageAcquisition::onAddImage() string:{}", test.toStdString());
 #endif
-	QByteArray ImgByteI((char*)(m_imageGrayResized.data), 768); // 32x24x1
-	Logger->trace("ImageAcquisition::onUpdate() emit(sendImage(ImgByteI));");
-	emit(sendImage(3, ImgByteI));
+	}
 
-
-	quint32 nMilliseconds2 = (quint32)myTimer.elapsed();
+	quint32 _millisec = (quint32)_timer.elapsed();
 	m_framerateAdd += m_framerate;
-	m_addingCounter += nMilliseconds2;
-	if (m_counter >= 1300)
+	m_addingCounter += _millisec;
+	
+
+	if (!m_imageGrayResized.empty())
 	{
-		Logger->warn("ImageAcquisition::onUpdate() (configure)ImageAcquisition time:{}", ((double)m_addingCounter / (double)m_counter));
-		Logger->warn("ImageAcquisition::onUpdate() (configure)ImageAcquisition framerate:{}", m_framerateAdd / (double)m_counter);
-		m_addingCounter = 0;
-		m_counter = 0;
-		m_framerateAdd = 0;
+		QByteArray ImgByteI((char*)(m_imageGrayResized.data), m_dataSize); // 32x24x1
+		Logger->trace("(configure)ImageAcquisition emit(sendImage(ImgByteI));");
+		emit(sendImage(3, ImgByteI));
+	}
+}
+
+void ImageAcquisition::ShowFramerate(cv::Mat const& image)
+{
+	Logger->warn("(timer)ImageAcquisition time:{}  framerate:{}", ((double)m_addingCounter / (double)m_counter),
+		m_framerateAdd / (double)m_counter);
+
+	m_addingCounter = 0;
+	m_framerateAdd = 0;
+}
+
+void ImageAcquisition::ChangeSizeAndColor(cv::Mat const& image, cv::Mat& out)
+{
+
+	cv::Mat m_imageGray;
+	cv::Mat m_imageGrayResized;
+
+	if (image.channels() == 3)
+	{
+		cvtColor(image, m_imageGray, cv::COLOR_RGBA2GRAY);
+	}
+	else
+	{
+		m_imageGray = image.clone();
+	}
+
+	try
+	{
+		cv::resize(m_imageGray, out, cv::Size(m_width, m_height));
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		qDebug() << "exception caught: " << err_msg;
+		Logger->error("exception caught in ImageAcquisition::ChangeSizeAndColor()");
 	}
 }

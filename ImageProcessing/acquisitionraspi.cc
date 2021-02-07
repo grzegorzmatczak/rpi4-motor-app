@@ -53,7 +53,7 @@ void ImageAcquisition::onUpdate()
 	QTime _timer;
 
 	m_capture->grab(m_image);
-	if (m_image.empty() or m_image.cols == 0 or m_image.rows == 0)
+	if (m_image.empty() || m_image.cols == 0 || m_image.rows == 0)
 	{
 		Logger->error("ImageAcquisition::onAddImage() m_capture failed capture a frame");
 		return;
@@ -75,7 +75,6 @@ void ImageAcquisition::onUpdate()
 		Logger->trace("ImageAcquisition::onAddImage() string:{}", test.toStdString());
 #endif
 	}
-
 	quint32 _millisec = (quint32)_timer.elapsed();
 	m_framerateAdd += m_framerate;
 	m_addingCounter += _millisec;

@@ -29,8 +29,8 @@ public slots:
 	void onUpdate(cv::Mat image);
 
 private:
-	bool m_firstTime;
-	bool m_showDebugView;
+	bool m_firstTime{};
+	bool m_showDebugView{};
 
 private:
 	quint32 m_counter{};
@@ -40,21 +40,22 @@ private:
 	std::vector<std::vector<cv::Point>> m_contours;
 	std::vector<cv::Vec4i> m_hierarchy;
 
-	quint32 m_data;
-	std::string m_binary;
+	quint32 m_data{};
+	std::string m_binary{};
 
-	double m_areaAcc;
-	qint32 m_thresh;
-	qint32 m_width;
-	qint32 m_height;
-	double m_vote;
-	qint32 m_cameraCounter;
-	qint32 m_cameraCounterColor;
+	double m_areaAcc{};
+	qint32 m_thresh{};
+	qint32 m_width{};
+	qint32 m_height{};
+	qint32 m_dataSize{};
+	double m_vote{};
+	qint32 m_cameraCounter{};
+	qint32 m_cameraCounterColor{};
 
 private:
-	bool m_debugPreview;
-	qint32 m_debugFrames;
-	qint32 m_debugFramesColor;
+	bool m_debugPreview{};
+	qint32 m_debugFrames{};
+	qint32 m_debugFramesColor{};
 };
 
 #endif // BOUNDS_H
