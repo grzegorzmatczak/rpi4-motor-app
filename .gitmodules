@@ -7,3 +7,6 @@
 [submodule "IncludeSpdlog"]
 	path = IncludeSpdlog
 	url = https://github.com/SanczoPL/IncludeSpdlog.git
+[submodule "QtCommunicatorPlugin"]
+	path = QtCommunicatorPlugin
+	url = https://github.com/SanczoPL/QtCommunicatorPlugin.git
