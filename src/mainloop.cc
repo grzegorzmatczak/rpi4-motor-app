@@ -78,4 +78,5 @@ void MainLoop::createStartupThreads()
 	m_imageBoundsThread->start();
 	connect(m_imageAcquisition, &ImageAcquisition::update, m_imageBounds, &Bounds::onUpdate);
 	connect(m_imageBounds, &Bounds::sendImage, m_server, &Broadcaster::onSendImage);
+	connect(m_imageBounds, &Bounds::sendError, m_server, &Broadcaster::onSendError);
 }

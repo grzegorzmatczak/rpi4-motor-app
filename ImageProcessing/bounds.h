@@ -24,6 +24,7 @@ private:
 
 signals:
 	void sendImage(const qint32 topic, QByteArray image);
+	void sendError(const qint32 topic, const qint32 error);
 
 public slots:
 	void onUpdate(cv::Mat image);
