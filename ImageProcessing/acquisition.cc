@@ -7,7 +7,7 @@ constexpr auto OPENCV_PREVIEW{ "OpenCV_Preview" };
 
 class QJsonObject;
 
-#define DEBUG true
+#define DEBUG false
 
 ImageAcquisition::ImageAcquisition(QJsonObject const& a_config)
 	: m_width{ a_config[WIDTH].toInt() }
@@ -26,31 +26,35 @@ void ImageAcquisition::configure(QJsonObject const& a_config)
 	m_height = { a_config[HEIGHT].toInt() };
 }
 
+QVector<QString> static scanAllImages(QString path)
+{
+	QVector<QString> temp;
+	QDir directory(path);
+	QStringList images = directory.entryList(QStringList() << "*.jpg" << "*.png" << "*.PNG" << "*.JPG", QDir::Files);
+
+	foreach(QString filename, images)
+	{
+		//QStringList sl = filename.split(".");
+		temp.push_back(filename);
+	}
+	return temp;
+}
+
 void ImageAcquisition::loadCapture()
 {
 	Logger->trace("ImageAcquisition::loadCapture()");
-	m_capture = cv::VideoCapture("E:/repo/CrossCompilerQtRpi2/image/%d.png");
-	m_capture >> m_image;
-#if(DEBUG)
-	cv::imshow("image", m_image);
-	cv::waitKey(1);
-#endif
+	//m_capture = cv::VideoCapture("E:/repo/CrossCompilerQtRpi2/image/%d.png"); 
+	//m_capture.open("E:/repo/CrossCompilerQtRpi2/image/%d.png");
 
-	if (m_image.empty() == true)
+
+	m_imageList = scanAllImages("E:/repo/CrossCompilerQtRpi2/image/");
+	//std::sort(m_imageList.begin(), m_imageList.end());
+	if (m_imageList.size() > 0)
 	{
-		for (int i = 0; i < 20; i++)
-		{
-			if (m_image.empty() == true)
-			{
-				m_capture = cv::VideoCapture(i);
-				m_capture >> m_image;
-				if (m_image.empty() == false)
-				{
-					break;
-				}
-			}
-		}
+
 	}
+
+
 	Logger->trace("ImageAcquisition::loadCapture() done");
 }
 
@@ -60,10 +64,10 @@ void ImageAcquisition::onUpdate()
 	m_counter++;
 	m_framerate = 999;
 	QTime myTimer;
-	if (m_capture.isOpened())
-	{
+
 		Logger->trace("ImageAcquisition::onUpdate() m_capture.isOpened():{}", m_capture.isOpened());
-		m_capture >> m_image;
+		m_image = cv::imread("E:/repo/CrossCompilerQtRpi2/image/"+ m_imageList[m_counter].toStdString());
+		Logger->info("open:{}","E:/repo/CrossCompilerQtRpi2/image/"+ m_imageList[m_counter].toStdString());
 		if (m_image.empty())
 		{
 			loadCapture();
@@ -83,24 +87,23 @@ void ImageAcquisition::onUpdate()
 			m_framerate = static_cast<int>(1000.0 / m_lastFrameReciveTime.restart());
 			emit(update(m_imageGrayResized));
 		}
-	}
-	else {
-		m_capture = cv::VideoCapture("E:/repo/CrossCompilerQtRpi2/image/%d.png");
+	
 
-	}
 #if(DEBUG)
 	cv::imshow("m_imageGrayResized", m_imageGrayResized);
 	cv::waitKey(1);
 
+	
+#endif
 	QByteArray ImgByteI((char*)(m_imageGrayResized.data), 768); // 32x24x1
 	Logger->trace("ImageAcquisition::onUpdate() emit(sendImage(ImgByteI));");
 	emit(sendImage(3, ImgByteI));
-#endif
+
 
 	quint32 nMilliseconds2 = (quint32)myTimer.elapsed();
 	m_framerateAdd += m_framerate;
 	m_addingCounter += nMilliseconds2;
-	if (m_counter >= 100)
+	if (m_counter >= 1300)
 	{
 		Logger->warn("ImageAcquisition::onUpdate() (configure)ImageAcquisition time:{}", ((double)m_addingCounter / (double)m_counter));
 		Logger->warn("ImageAcquisition::onUpdate() (configure)ImageAcquisition framerate:{}", m_framerateAdd / (double)m_counter);

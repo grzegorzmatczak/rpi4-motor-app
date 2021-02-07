@@ -32,6 +32,7 @@ class ImageAcquisition : public QObject
   cv::Mat m_imageGray;
   cv::Mat m_imageGrayResized;
   cv::VideoCapture m_capture;
+  QVector<QString> m_imageList;
 
  private:
   qint32 m_width;
