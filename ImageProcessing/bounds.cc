@@ -90,7 +90,7 @@ void Bounds::onUpdate(cv::Mat image)
 	}
 	middleCountour = middleCountour / m_vote;
 	double dir = ((middleCountour - (m_width / 2.0)) / 6.4);
-	Logger->error("BoundariesFinder::onUpdate() dir:{}", dir);
+	Logger->debug("BoundariesFinder::onUpdate() dir:{}", dir);
 	cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 2, cv::Scalar(255), -1);
 	cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 1, cv::Scalar(0), -1);
 
@@ -103,7 +103,7 @@ void Bounds::onUpdate(cv::Mat image)
 	{
 		error = -10000;
 	}
-	Logger->error("BoundariesFinder::onUpdate() error:{}", error);
+	Logger->debug("BoundariesFinder::onUpdate() error:{}", error);
 
 			cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 2, cv::Scalar(255), -1);
 			cv::circle(image2, cv::Point(middleCountour, image2.rows / 2), 1, cv::Scalar(0), -1);
