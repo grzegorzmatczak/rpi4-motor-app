@@ -44,14 +44,14 @@ QVector<QString> static scanAllImages(QString path)
 void ImageAcquisition::loadCapture()
 {
 	Logger->trace("ImageAcquisition::loadCapture()");
-	m_imageList = scanAllImages("E:/repo/CrossCompilerQtRpi2/image/");
+	m_imageList = scanAllImages("E:/repo/CrossCompilerQtRpi2/LineDataset/");
 	Logger->trace("ImageAcquisition::loadCapture() done");
 }
 
 void ImageAcquisition::onUpdate()
 {
 	m_counter++;
-	Logger->trace("ImageAcquisition::onAddImage() grab");
+	Logger->trace("ImageAcquisition::onUpdate() grab");
 	cv::Mat m_image;
 	QTime _timer;
 	_timer.start();
@@ -63,12 +63,13 @@ void ImageAcquisition::onUpdate()
 	}
 
 	Logger->trace("ImageAcquisition::onUpdate() m_capture.isOpened():{}", m_capture.isOpened());
-	m_image = cv::imread("E:/repo/CrossCompilerQtRpi2/image/" + m_imageList[m_counter].toStdString());
-	Logger->trace("open:{}", "E:/repo/CrossCompilerQtRpi2/image/" + m_imageList[m_counter].toStdString());
+
+	m_image = cv::imread("E:/repo/CrossCompilerQtRpi2/LineDataset/" + m_imageList[m_counter].toStdString());
+	Logger->trace("open:{}", "E:/repo/CrossCompilerQtRpi2/LineDataset/" + m_imageList[m_counter].toStdString());
 
 	if (m_image.empty() || m_image.cols == 0 || m_image.rows == 0)
 	{
-		Logger->error("ImageAcquisition::onAddImage() m_capture failed capture a frame");
+		Logger->error("ImageAcquisition::onUpdate() m_capture failed capture a frame");
 		return;
 	}
 
@@ -111,7 +112,6 @@ void ImageAcquisition::ShowFramerate(cv::Mat const& image)
 
 void ImageAcquisition::ChangeSizeAndColor(cv::Mat const& image, cv::Mat& out)
 {
-
 	cv::Mat m_imageGray;
 	cv::Mat m_imageGrayResized;
 

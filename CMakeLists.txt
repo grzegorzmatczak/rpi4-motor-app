@@ -95,12 +95,14 @@ if (UNIX)
 endif (UNIX)
 
 add_executable(${TARGET_NAME}
+	config.json
     ${SRC} ${HEADERS}
 	${SRC_GLOB} ${HEADERS_GLOB}
 	${SRC_IMAGE_PROCESSING} ${HEADERS_IMAGE_PROCESSING}
 )
 
 add_executable(testModules 
+	config.json
 	${SRC} ${HEADERS}
 	${SRC_GLOB} ${HEADERS_GLOB}
 	${SRC_IMAGE_PROCESSING} ${HEADERS_IMAGE_PROCESSING}
