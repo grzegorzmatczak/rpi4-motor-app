@@ -44,7 +44,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 if (WIN32)
 	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\opencvBuild")
+	set(QT5_PATH "E:\\Qt\\5.12.8\\msvc2017_64")
 	list(APPEND CMAKE_PREFIX_PATH "E:\\Qt\\5.12.8\\msvc2017_64")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\spdlog\\build\\install")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\spdlog\\build\\install//lib//cmake//spdlog")
+	include("E:\\repo\\spdlog\\cmake\\utils.cmake")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\IncludeSpdlog\\build\\install")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\ConfigReader\\build\\install")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\QtCommunicator\\build\\install")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\QtCommunicatorPlugin\\build\\install")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\Broadcaster\\build\\install")
 endif (WIN32)
 
 configure_file(config.json ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.json)
@@ -56,13 +65,16 @@ find_package(Qt5Core REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5SerialPort REQUIRED)
 find_package(Qt5Network REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_subdirectory(IncludeSpdlog)
-add_subdirectory(ConfigReader)
-add_subdirectory(QtCommunicatorPlugin)
-add_subdirectory(Broadcaster)
+
+find_package(spdlog REQUIRED)
+find_package(IncludeSpdlog REQUIRED)
+find_package(ConfigReader REQUIRED)
+find_package(QtCommunicatorPlugin REQUIRED)
+find_package(Broadcaster REQUIRED)
 
 if (UNIX)
 	add_subdirectory(raspicam-0.1.8)
@@ -77,6 +89,7 @@ if (WIN32)
 	set(SRC_IMAGE_PROCESSING ImageProcessing/acquisition.cc ImageProcessing/bounds.cc)
 	set(HEADERS_IMAGE_PROCESSING ImageProcessing/acquisition.h ImageProcessing/bounds.h)
 endif (WIN32)
+
 
 
 if (UNIX)
@@ -110,21 +123,21 @@ add_executable(testModules
 	
 add_test(testModules testModules)
 
-target_link_libraries(testModules IncludeSpdlog ConfigReader Broadcaster)
+target_link_libraries(testModules Broadcaster)
 target_link_libraries(testModules ${OpenCV_LIBS} Threads::Threads)
-target_link_libraries(testModules Qt5::Test Qt5::Network Qt5::Widgets)
+target_link_libraries(testModules Qt5::Test Qt5::Network Qt5::Widgets Qt5::SerialPort)
 
 
 if (UNIX)
-	target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader Broadcaster)
+	target_link_libraries(${PROJECT_NAME} Broadcaster)
 	target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads)
-	target_link_libraries(${PROJECT_NAME} Qt5::Test Qt5::Network Qt5::Widgets)
+	target_link_libraries(${PROJECT_NAME} Qt5::Test Qt5::Network Qt5::Widgets Qt5::SerialPort)
 endif (UNIX)
 
 if (WIN32)
-	target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader Broadcaster)
+	target_link_libraries(${PROJECT_NAME} Broadcaster)
 	target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads)
-	target_link_libraries(${PROJECT_NAME} Qt5::Test Qt5::Network Qt5::Widgets)
+	target_link_libraries(${PROJECT_NAME} Qt5::Test Qt5::Network Qt5::Widgets Qt5::SerialPort)
 endif (WIN32)
 
 if (UNIX)
