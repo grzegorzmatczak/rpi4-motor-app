@@ -13,6 +13,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "../ConfigReader/include/configreader.h"
+#include "configreader.h"
 
 #endif // STRUCTURES_PREPROCESSING_MODULES_H
