@@ -14,7 +14,8 @@
 
 #include "structures.h"
 #include "i2c_arduino_control.h"
-#include "../Broadcaster/include/broadcaster.h"
+#include "broadcaster.h"
+#include "uart.h"
 #include "../ImageProcessing/acquisition.h"
 #include "../ImageProcessing/bounds.h"
 
@@ -42,6 +43,9 @@ private:
 
 	QThread* m_serverThread;
 	Broadcaster* m_server;
+
+	QThread* m_uartThread;
+	Uart* m_uart;
 
 	QThread* m_ImageAcquisitionThread;
 	ImageAcquisition* m_imageAcquisition;

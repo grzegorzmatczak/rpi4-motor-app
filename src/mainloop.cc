@@ -59,6 +59,13 @@ void MainLoop::createStartupThreads()
 	connect(m_serverThread, &QThread::finished, m_server, &QObject::deleteLater);
 	m_serverThread->start();
 
+	// Uart:
+	m_uartThread = new QThread();
+	m_uart = new Uart(m_config[SERVER].toObject());
+	m_uart->moveToThread(m_uartThread);
+	connect(m_uartThread, &QThread::finished, m_uart, &QObject::deleteLater);
+	m_uartThread->start();
+
 	// ImageAcquisition:
 	m_imageAcquisition = new ImageAcquisition(m_config[IMAGE_ACQUISITION].toObject());
 	m_ImageAcquisitionThread = new QThread();

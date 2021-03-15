@@ -9,7 +9,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include "../../src/structures.h"
+#include "../src/structures.h"
 
 class Bounds : public QObject
 {
