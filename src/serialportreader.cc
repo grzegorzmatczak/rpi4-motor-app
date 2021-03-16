@@ -61,27 +61,23 @@ SerialPortReader::SerialPortReader(QSerialPort* serialPort, QObject* parent) :
     connect(m_serialPort, &QSerialPort::errorOccurred, this, &SerialPortReader::handleError);
     connect(&m_timer, &QTimer::timeout, this, &SerialPortReader::handleTimeout);
 
-    m_timer.start(5000);
+    //m_timer.start(5000);
 }
 
 void SerialPortReader::handleReadyRead()
 {
     m_readData.append(m_serialPort->readAll());
 
-    if (!m_timer.isActive())
-        m_timer.start(5000);
-}
-
-void SerialPortReader::handleTimeout()
-{
     if (m_readData.isEmpty()) {
         m_standardOutput << QObject::tr("No data was currently available "
             "for reading from port %1")
             .arg(m_serialPort->portName())
             << "\n";
         Logger->info("SerialPortReader::handleTimeout() m_readData.isEmpty()");
+
     }
-    else {
+    else
+    {
         m_standardOutput << QObject::tr("Data successfully received from port %1")
             .arg(m_serialPort->portName())
             << "\n";
@@ -90,7 +86,11 @@ void SerialPortReader::handleTimeout()
         m_readData.clear();
     }
 
-    //QCoreApplication::quit();
+    
+}
+
+void SerialPortReader::handleTimeout()
+{
 }
 
 void SerialPortReader::handleError(QSerialPort::SerialPortError serialPortError)

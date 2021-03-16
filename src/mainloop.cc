@@ -31,13 +31,13 @@ void MainLoop::onUpdate()
 		m_server->onSubscribe(topics);
 		m_firstTime = false;
 	}
-	Logger->info("MainLoop::onUpdate()");
+	Logger->trace("MainLoop::onUpdate()");
 	m_uart->write("RPI send message!");
 }
 
 void MainLoop::configure(QJsonObject const& a_config)
 {
-	Logger->info("MainLoop::configure()");
+	Logger->trace("MainLoop::configure()");
 }
 
 void MainLoop::createStartupThreads()
