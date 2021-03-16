@@ -67,15 +67,15 @@ void MainLoop::createStartupThreads()
 	m_uartThread->start();
 
 	// ImageAcquisition:
-	m_imageAcquisition = new ImageAcquisition(m_config[IMAGE_ACQUISITION].toObject());
-	m_ImageAcquisitionThread = new QThread();
-	m_imageAcquisition->moveToThread(m_ImageAcquisitionThread);
-	connect(m_ImageAcquisitionThread, &QThread::finished, m_imageAcquisition, &QObject::deleteLater);
+	//m_imageAcquisition = new ImageAcquisition(m_config[IMAGE_ACQUISITION].toObject());
+	//m_ImageAcquisitionThread = new QThread();
+	//m_imageAcquisition->moveToThread(m_ImageAcquisitionThread);
+	//connect(m_ImageAcquisitionThread, &QThread::finished, m_imageAcquisition, &QObject::deleteLater);
 	//m_ImageAcquisitionThread->start();
-	connect(m_imageAcquisition, &ImageAcquisition::sendImage, m_server, &Broadcaster::onSendImage);
-	m_timerAcquisition = new QTimer(this);
-	m_timerAcquisition->start(m_tickAcquisition);
-	connect(m_timerAcquisition, SIGNAL(timeout()), m_imageAcquisition, SLOT(onUpdate()));
+	//connect(m_imageAcquisition, &ImageAcquisition::sendImage, m_server, &Broadcaster::onSendImage);
+	//m_timerAcquisition = new QTimer(this);
+	//m_timerAcquisition->start(m_tickAcquisition);
+	//connect(m_timerAcquisition, SIGNAL(timeout()), m_imageAcquisition, SLOT(onUpdate()));
 
 
 	// Bounds:
