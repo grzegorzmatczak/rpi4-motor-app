@@ -40,11 +40,11 @@ void MainLoop::configure(QJsonObject const& a_config)
 
 void MainLoop::createStartupThreads()
 {
-	m_arduinoControlThread = new QThread();
-	m_arduinoControl = new ArduinoControl(m_config[ARDUINO].toObject());
+	//m_arduinoControlThread = new QThread();
+	//m_arduinoControl = new ArduinoControl(m_config[ARDUINO].toObject());
 
-	m_arduinoControl->moveToThread(m_arduinoControlThread);
-	connect(m_arduinoControlThread, &QThread::finished, m_arduinoControl, &QObject::deleteLater);
+	//m_arduinoControl->moveToThread(m_arduinoControlThread);
+	//connect(m_arduinoControlThread, &QThread::finished, m_arduinoControl, &QObject::deleteLater);
 	//m_arduinoControlThread->start();
 
 	m_timer = new QTimer(this);
