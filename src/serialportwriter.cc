@@ -77,21 +77,21 @@ void SerialPortWriter::handleBytesWritten(qint64 bytes)
     if (m_bytesWritten == m_writeData.size()) {
         m_bytesWritten = 0;
         m_standardOutput << QObject::tr("Data successfully sent to port %1").arg(m_serialPort->portName()) << endl;
-        QCoreApplication::quit();
+        //QCoreApplication::quit();
     }
 }
 
 void SerialPortWriter::handleTimeout()
 {
     m_standardOutput << QObject::tr("Operation timed out for port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()) << endl;
-    QCoreApplication::exit(1);
+    //QCoreApplication::exit(1);
 }
 
 void SerialPortWriter::handleError(QSerialPort::SerialPortError serialPortError)
 {
     if (serialPortError == QSerialPort::WriteError) {
         m_standardOutput << QObject::tr("An I/O error occurred while writing the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()) << endl;
-        QCoreApplication::exit(1);
+        //QCoreApplication::exit(1);
     }
 }
 
@@ -103,11 +103,11 @@ void SerialPortWriter::write(const QByteArray& writeData)
 
     if (bytesWritten == -1) {
         m_standardOutput << QObject::tr("Failed to write the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()) << endl;
-        QCoreApplication::exit(1);
+        // QCoreApplication::exit(1);
     }
     else if (bytesWritten != m_writeData.size()) {
         m_standardOutput << QObject::tr("Failed to write all the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()) << endl;
-        QCoreApplication::exit(1);
+        //QCoreApplication::exit(1);
     }
 
     m_timer.start(5000);
