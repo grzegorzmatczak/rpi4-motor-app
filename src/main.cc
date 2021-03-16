@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
 	delete configReader;
 
 	Logger->set_level(static_cast<spdlog::level::level_enum>(m_config[GENERAL].toObject()[LOG_LEVEL].toInt()));
-	intro();
 
 	MainLoop mainLoop{ m_config};
 	return application.exec();

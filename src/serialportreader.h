@@ -55,6 +55,7 @@
 #include <QSerialPort>
 #include <QTextStream>
 #include <QTimer>
+#include "structures.h"
 
 QT_BEGIN_NAMESPACE
 

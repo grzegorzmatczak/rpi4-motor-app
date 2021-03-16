@@ -79,15 +79,17 @@ void SerialPortReader::handleTimeout()
             "for reading from port %1")
             .arg(m_serialPort->portName())
             << "\n";
+        Logger->info("SerialPortReader::handleTimeout() m_readData.isEmpty()");
     }
     else {
         m_standardOutput << QObject::tr("Data successfully received from port %1")
             .arg(m_serialPort->portName())
             << "\n";
         m_standardOutput << m_readData << "\n";
+        Logger->info("SerialPortReader::handleTimeout() Data successfully received from port");
     }
 
-    QCoreApplication::quit();
+    //QCoreApplication::quit();
 }
 
 void SerialPortReader::handleError(QSerialPort::SerialPortError serialPortError)
@@ -98,6 +100,7 @@ void SerialPortReader::handleError(QSerialPort::SerialPortError serialPortError)
             .arg(m_serialPort->portName())
             .arg(m_serialPort->errorString())
             << "\n";
-        QCoreApplication::exit(1);
+        //QCoreApplication::exit(1);
+        Logger->info("SerialPortReader::handleError() An I/O error occurred while reading ");
     }
 }

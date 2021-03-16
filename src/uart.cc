@@ -10,15 +10,15 @@ Uart::Uart(QJsonObject a_config)
 	const int serialPortBaudRate =  QSerialPort::Baud9600;
 	m_serialPort->setBaudRate(serialPortBaudRate);
 
-	if (!m_serialPort->open(QIODevice::ReadOnly)) {
-		Logger->error("serialPort.open(QIODevice::ReadOnly) failed!!");
+	if (!m_serialPort->open(QIODevice::ReadWrite)) {
+		Logger->error("serialPort.open(QIODevice::ReadWrite) failed!!");
 	}
 	else
 	{
-		Logger->error("serialPort.open(QIODevice::ReadOnly) ok!!");
+		Logger->error("serialPort.open(QIODevice::ReadWrite) ok!!");
 	}
 	m_serialPortReader = new SerialPortReader(m_serialPort);
-	m_serialPortWriter = new SerialPortWriter(m_serialPort);
+	//m_serialPortWriter = new SerialPortWriter(m_serialPort);
 }
 
 void Uart::onUpdate()
