@@ -18,7 +18,7 @@ Uart::Uart(QJsonObject a_config)
 		Logger->error("serialPort.open(QIODevice::ReadWrite) ok!!");
 	}
 	m_serialPortReader = new SerialPortReader(m_serialPort);
-	//m_serialPortWriter = new SerialPortWriter(m_serialPort);
+	m_serialPortWriter = new SerialPortWriter(m_serialPort);
 }
 
 void Uart::onUpdate()

@@ -86,7 +86,8 @@ void SerialPortReader::handleTimeout()
             .arg(m_serialPort->portName())
             << "\n";
         m_standardOutput << m_readData << "\n";
-        Logger->info("SerialPortReader::handleTimeout() Data successfully received from port");
+        Logger->info("SerialPortReader::handleTimeout() Data successfully received from port:{}", m_readData);
+        m_readData.clear();
     }
 
     //QCoreApplication::quit();

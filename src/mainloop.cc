@@ -31,6 +31,8 @@ void MainLoop::onUpdate()
 		m_server->onSubscribe(topics);
 		m_firstTime = false;
 	}
+	Logger->info("MainLoop::onUpdate()");
+	m_uart->write("RPI send message!");
 }
 
 void MainLoop::configure(QJsonObject const& a_config)
@@ -48,7 +50,7 @@ void MainLoop::createStartupThreads()
 	//m_arduinoControlThread->start();
 
 	m_timer = new QTimer(this);
-	m_timer->start(1000);
+	m_timer->start(2000);
 	connect(m_timer, SIGNAL(timeout()), m_arduinoControl, SLOT(onUpdate()));
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(onUpdate()));
 
