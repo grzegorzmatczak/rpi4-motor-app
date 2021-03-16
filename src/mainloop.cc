@@ -71,7 +71,7 @@ void MainLoop::createStartupThreads()
 	m_ImageAcquisitionThread = new QThread();
 	m_imageAcquisition->moveToThread(m_ImageAcquisitionThread);
 	connect(m_ImageAcquisitionThread, &QThread::finished, m_imageAcquisition, &QObject::deleteLater);
-	m_ImageAcquisitionThread->start();
+	//m_ImageAcquisitionThread->start();
 	connect(m_imageAcquisition, &ImageAcquisition::sendImage, m_server, &Broadcaster::onSendImage);
 	m_timerAcquisition = new QTimer(this);
 	m_timerAcquisition->start(m_tickAcquisition);
