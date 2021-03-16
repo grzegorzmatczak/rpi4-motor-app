@@ -45,7 +45,7 @@ void MainLoop::createStartupThreads()
 
 	m_arduinoControl->moveToThread(m_arduinoControlThread);
 	connect(m_arduinoControlThread, &QThread::finished, m_arduinoControl, &QObject::deleteLater);
-	m_arduinoControlThread->start();
+	//m_arduinoControlThread->start();
 
 	m_timer = new QTimer(this);
 	m_timer->start(1000);

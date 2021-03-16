@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QTextStream>
 #include "serialportreader.h"
+#include "serialportwriter.h"
 
 #ifdef _WIN32
 #endif // _WIN32
@@ -25,10 +26,12 @@ signals:
 public slots:
 	void onUpdate();
 	void configure(QJsonObject const& a_config);
+	void write(const QByteArray& writeData);
 
 private:
 	QSerialPort *m_serialPort;
 	SerialPortReader* m_serialPortReader;
+	SerialPortWriter* m_serialPortWriter;
 };
 
 #endif // UART_H
