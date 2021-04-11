@@ -65,6 +65,10 @@ private:
 private:
 	// Bools:
 	bool m_firstTime{};
+	bool m_uartModule{};
+	bool m_arduinoModule{};
+	bool m_imageProcessingModule{};
+	bool m_broadcasterModule{};
 	qint32 m_tickAcquisition{};
 };
 #endif // MAINLOOP_H

@@ -56,5 +56,5 @@ void intro()
 	Logger->info(
 		"\n\n\t\033[1;31mrpi4-motor-app \033[0m\n"
 		"\tAuthor: Grzegorz Matczak\n"
-		"\t07.02s.2021\n");
+		"\t25.03.2021\n");
 }

@@ -57,6 +57,7 @@
 #include <QTimer>
 #include <QByteArray>
 #include <QObject>
+#include "structures.h"
 
 QT_USE_NAMESPACE
 

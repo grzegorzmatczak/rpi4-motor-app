@@ -1,6 +1,10 @@
 {
   "General": {
-    "LogLevel": 1
+    "LogLevel": 2,
+    "UartModule": false,
+    "ArduinoModule": false,
+    "imageProcessingModule": false,
+    "BroadcasterModule": true
   },
   "Server": {
     "Port": 12345,
